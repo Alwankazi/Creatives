@@ -1,3 +1,0 @@
-Sitemap: https://saijalshakya.com.np/sitemap.xml
-User-agent: *
-Disallow: /.well-known/
