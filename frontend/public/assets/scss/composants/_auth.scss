@@ -1,0 +1,71 @@
+// Authentification (Login - Register)
+.bledstore-auth-wrapper {
+
+    .bledstore-auth-title,
+    .bledstore-auth-footer {
+        text-align: center;
+        padding-bottom: 10px;
+
+        .bledstore-auth-title-icon {
+            top: 10px;
+            position: relative;
+            font-size: 75px;
+        }
+
+        h1 {
+            font-size: 2rem;
+            text-transform: uppercase;
+        }
+    }
+
+    .bledstore-auth-register-promo {
+        display: block;
+        border: 1px solid var(--bledstore-tomato);
+        color: var(--bledstore-white);
+        background-color: var(--bledstore-tomato);
+        text-align: center;
+
+        .bledstore-auth-register-title {
+            position: relative;
+            top: -7px;
+        }
+    }
+
+    .bledstore-auth-cta {
+        left: 5px;
+        position: relative;
+        font-weight: 800;
+        color: var(--bledstore-primary) !important;
+
+        &:hover {
+            color: var(--bledstore-warning) !important;
+        }
+    }
+
+    .bledstore-auth-show-hide-content {
+
+        .bledstore-auth-show-hide-icon{
+            position: relative;
+            text-align: right;
+            top: -30px;
+            right: 15px;
+            cursor: pointer;
+            font-size: 20px;
+            float: right;
+        }
+    }
+
+    .bledstore-auth-forgot-password {
+        text-align: right;
+        right: 0;
+        position: relative;
+        top: -20px;
+    }
+
+    .bledstore-auth-btn-submit {
+        &:hover {
+            background-color: var(--bledstore-primary);
+            color: var(--bledstore-white);
+        }
+    }
+}

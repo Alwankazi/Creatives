@@ -1,142 +1,173 @@
-import asyncHandler from "express-async-handler";
+import expressAsyncHander from "express-async-handler";
 import Product from "../models/productModel.js";
+import data from "../data.js";
+import User from "../models/userModel.js";
 
-// @desc    Fetch all products
-// @route   GET /api/products
-// @access  Public
-export const getProducts = asyncHandler(async (req, res) => {
-    const pageSize = 8;
-    const page = Number(req.query.pagenumber) || 1;
-
-    const keyword = req.query.keyword
-        ? {
-              name: {
-                  $regex: req.query.keyword,
-                  $options: "i",
-              },
-          }
-        : {};
-
-    const count = await Product.countDocuments({ ...keyword });
-    const products = await Product.find({ ...keyword })
-        .limit(pageSize)
-        .skip(pageSize * (page - 1));
-
-    res.json({ products, page, pages: Math.ceil(count / pageSize) });
+export const getListProducts = expressAsyncHander(async (req, res) => {
+  const pageSize = Number(req.query.pageSize) || 4;
+  const page = Number(req.query.pageNumber) || 1;
+  const seller = req.query.seller || "";
+  const name = req.query.name || "";
+  const order = req.query.order || "";
+  const category = req.query.category || "";
+  const brand = req.query.brand || "";
+  const min =
+    req.query.min && Number(req.query.min) !== 0 ? Number(req.query.min) : 0;
+  const max =
+    req.query.max && Number(req.query.max) !== 0 ? Number(req.query.max) : 0;
+  const rating =
+    req.query.rating && Number(req.query.rating) !== 0
+      ? Number(req.query.rating)
+      : 0;
+  const sellerFilter = seller ? { seller } : {};
+  const categoryFilter = category ? { category } : {};
+  const brandFilter = brand ? { brand } : {};
+  const priceFilter = min && max ? { price: { $gte: min, $lte: max } } : {};
+  const ratingFilter = rating ? { rating: { $gte: rating } } : {};
+  const nameFilter = name ? { name: { $regex: name, $options: "i" } } : {}; // to contains some characters in the search
+  const sortOrder =
+    order === "lowest"
+      ? { price: 1 }
+      : order === "highest"
+      ? { price: -1 }
+      : order === "toprated"
+      ? { rating: -1 }
+      : { _id: -1 };
+  const count = await Product.count({
+    ...sellerFilter,
+    ...nameFilter,
+    ...categoryFilter,
+    ...brandFilter,
+    ...priceFilter,
+    ...ratingFilter,
+  });
+  const listProducts = await Product.find({
+    ...sellerFilter,
+    ...nameFilter,
+    ...categoryFilter,
+    ...brandFilter,
+    ...priceFilter,
+    ...ratingFilter,
+  })
+    .populate("seller", "seller.name seller.logo")
+    .sort(sortOrder)
+    .skip(pageSize * (page - 1))
+    .limit(pageSize);
+  res
+    .status(200)
+    .send({ listProducts, page, pages: Math.ceil(count / pageSize), count });
 });
 
-// @desc    Fetch single product
-// @route   GET /api/products/:id
-// @access  Public
-export const getProductById = asyncHandler(async (req, res) => {
-    const product = await Product.findById(req.params.id);
-    if (product) {
-        res.json(product);
+export const seedProducts = expressAsyncHander(async (req, res) => {
+  await Product.remove({}); // Remove all the products before saving
+  const seller = await User.findOne({ isSeller: true });
+  if (seller) {
+    const products = data.products.map((product) => ({
+      ...product,
+      seller: seller._id,
+    }));
+    const createdProducts = await Product.insertMany(products);
+    res.status(200).send({ createdProducts });
+  } else {
+    res
+      .status(500)
+      .send({ message: "No seller found. first run /v1/api/users/seed" });
+  }
+});
+
+export const getProductById = expressAsyncHander(async (req, res) => {
+  const product = await Product.findById(req.params.productId).populate(
+    "seller",
+    "seller.name seller.description seller.logo seller.numReviews seller.rating"
+  );
+  if (!product) {
+    res.status(404).send({ message: "Product not found!!!!" });
+  } else {
+    res.status(200).send(product);
+  }
+});
+
+export const getProductsRelatedByCategory = expressAsyncHander(
+  async (req, res) => {
+    let limit = req.query.limit ? parseInt(req.query.limit) : 6;
+    const product = await Product.findById(req.params.productId);
+    const productsRelated = await Product.find({
+      _id: { $ne: req.params.productId },
+      category: product.category,
+    }).populate("seller", "seller.name seller.logo").limit(limit);
+    if (!productsRelated) {
+      res.status(404).send({ message: `Products related with ${req.params.category} not found!!!!` });
     } else {
-        res.status(404);
-        throw new Error("Product not found");
+      res.status(200).send(productsRelated);
     }
-});
+  }
+);
 
-// @desc    Delete single product
-// @route   DELETE /api/products/:id
-// @access  Private/Admin
-export const deleteProduct = asyncHandler(async (req, res) => {
-    const product = await Product.findById(req.params.id);
-    if (product) {
-        await product.remove();
-        res.json({ message: "Product removed" });
-    } else {
-        res.status(404);
-        throw new Error("Product not found");
-    }
-});
-
-// @desc    Create single product
-// @route   POST /api/products
-// @access  Private/Admin
-export const createProduct = asyncHandler(async (req, res) => {
-    const product = new Product({
-        name: "Sample Name",
-        price: 0,
-        user: req.user._id,
-        image: "/images/sample.jpg",
-        brand: "Sample Brand",
-        category: "Sample Category",
-        countInStock: 0,
-        numReviews: 0,
-        description: "Sample Description",
-    });
-
+export const createProduct = expressAsyncHander(async (req, res) => {
+  const product = new Product({
+    name: req.body.name,
+    seller: req.user._id,
+    description: req.body.description,
+    category: req.body.category,
+    brand: req.body.brand,
+    image: req.body.image,
+    price: req.body.price,
+    discountPrice: req.body.discountPrice,
+    countInStock: req.body.countInStock,
+  });
+  if (product.price <= product.discountPrice) {
+    res.status(400).send({ message: "Discount price is greater or equal than price" });
+  } else {
     const createdProduct = await product.save();
-    res.status(201).json(createdProduct);
-});
-
-// @desc    Update single product
-// @route   PUT /api/products/:id
-// @access  Private/Admin
-export const updateProduct = asyncHandler(async (req, res) => {
-    const { name, price, image, brand, category, countInStock, description } = req.body;
-
-    const product = await Product.findById(req.params.id);
-    if (product) {
-        product.name = name;
-        product.price = price;
-        product.image = image;
-        product.brand = brand;
-        product.category = category;
-        product.countInStock = countInStock;
-        product.description = description;
-
-        const updatedProduct = await product.save();
-        res.status(201).json(updatedProduct);
+    if (createdProduct) {
+      res.status(201).send({
+        message: "Product Created successfuly.",
+        product: createdProduct,
+      });
     } else {
-        res.status(404);
-        throw new Error("Product not found");
+      res.status(500).send({ message: "Error in creating product" });
     }
+  }
 });
 
-// @desc    Create new review
-// @route   POST /api/products/:id/reviews
-// @access  Private
-export const createProductReview = asyncHandler(async (req, res) => {
-    const { rating, comment } = req.body;
-
-    const product = await Product.findById(req.params.id);
-    if (product) {
-        const alreadyReviewed = product.reviews.find(
-            (review) => review.user.toString() === req.user._id.toString()
-        );
-
-        if (alreadyReviewed) {
-            res.status(400);
-            throw new Error("Product already reviewed");
-        }
-
-        const review = {
-            name: req.user.name,
-            rating: Number(rating),
-            comment,
-            user: req.user._id,
-        };
-
-        product.reviews.push(review);
-        product.numReviews = product.reviews.length;
-        product.rating =
-            product.reviews.reduce((acc, item) => item.rating + acc, 0) / product.reviews.length;
-
-        await product.save();
-        res.status(201).json({ message: "Review added" });
+export const updateProduct = expressAsyncHander(async (req, res) => {
+  const product = await Product.findById(req.params.productId);
+  if (product) {
+    product.name = req.body.name;
+    product.description = req.body.description;
+    product.category = req.body.category;
+    product.brand = req.body.brand;
+    product.image = req.body.image;
+    product.price = req.body.price;
+    product.discountPrice = req.body.discountPrice;
+    product.countInStock = req.body.countInStock;
+    if (product.price <= product.discountPrice) {
+      res.status(400).send({ message: "Discount price is greater or equal than price" });
     } else {
-        res.status(404);
-        throw new Error("Product not found");
+      const productUpdated = await product.save();
+      if (productUpdated) {
+        res.status(200).send({
+          message: "Product Updated successfully.",
+          product: productUpdated,
+        });
+      } else {
+        res.status(500).send({ message: "Error in updating product" });
+      }
     }
+  } else {
+    res.status(404).send({ message: "Product not Found" });
+  }
 });
 
-// @desc    Get top rated products
-// @route   POST /api/products/top
-// @access  Public
-export const getTopProducts = asyncHandler(async (req, res) => {
-    const products = await Product.find({}).sort({ rating: -1 }).limit(3);
-    res.json(products);
+export const deleteProduct = expressAsyncHander(async (req, res) => {
+  const product = await Product.findById(req.params.productId);
+  if (product) {
+    const productDeleted = await product.remove();
+    res.status(200).send({
+      message: "Product deleted successfully",
+      product: productDeleted,
+    });
+  } else {
+    res.status(404).send({ message: "Product not Found" });
+  }
 });

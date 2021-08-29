@@ -1,0 +1,238 @@
+.bledstore-dashboard-wrapper {
+    margin: 20px 20px 20px 0;
+
+    .bledstore-dashboard-col-1 {
+        flex: 1 1 25rem;
+        padding: 20px;
+        background-color: var(--bledstore-primary);
+
+        .bledstore-dashboard-left-wrapper {
+            display: grid;
+
+            .bledstore-dashboard-left-profile {
+                margin: 20px 0;
+                display: flex;
+                border: 1px solid var(--bledstore-white);
+                border-radius: 5px;
+                padding: 10px;
+
+                .bledstore-dashboard-left-profile-img {
+                    img {
+                        border-radius: 50%;
+                        width: 80px;
+                        height: 80px;
+                    }
+                }
+
+                .bledstore-dashboard-left-profile-infos {
+                    display: grid;
+                    margin: 0 20px;
+
+                    .info-name {
+                        color: var(--bledstore-white);
+                        font-size: 18px;
+                        font-weight: 500;
+                    }
+
+                    .info-admin,
+                    .info-seller {
+                        color: var(--bledstore-warning);
+                    }
+                }
+            }
+
+            .bledstore-dashboard-left-container {
+                padding-bottom: 20px;
+
+                .bledstore-dashboard-left-section {
+                    text-transform: uppercase;
+                    color: var(--bledstore-white);
+                    font-weight: 600;
+                }
+
+                .bledstore-dashboard-left-item {
+                    margin: 20px 0;
+                    cursor: pointer;
+                    font-size: 18px;
+
+                    .bledstore-dashboard-left-link {
+                        color: var(--bledstore-white);
+
+                        &.active {
+                            color: var(--bledstore-warning);
+                        }
+
+                        &:hover {
+                            color: var(--bledstore-warning);
+                        }
+
+                        .bledstore-dashboard-left-icon {
+                            padding-right: 5px;
+                            width: 20px;
+                            height: 20px;
+                        }
+
+                        .bledstore-dashboard-left-name {
+                            left: 5px;
+                            position: relative;
+                        }
+                    }
+
+                    .bledstore-dashboard-left-children {
+                        float: right;
+                        font-size: 18px;
+                        color: var(--bledstore-white);
+                        top: 3px;
+                        position: relative;
+                    }
+
+                    .bledstore-dashboard-left-children-menu {
+                        // float: left;
+                        left: 30px;
+                        position: relative;
+                        font-size: 18px;
+                        color: var(--bledstore-white);
+
+                        .bledstore-dashboard-left-children-item {
+                            margin: 15px 0px;
+
+                            .bledstore-dashboard-left-children-link {
+                                color: var(--bledstore-white);
+
+                                &:hover {
+                                    color: var(--bledstore-warning);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    .bledstore-dashboard-col-3 {
+        flex: 32 1 80rem;
+        margin-left: 20px;
+
+        .bledstore-dashboard-product {
+            display: flex;
+            justify-content: start;
+            align-items: center;
+
+            .bledstore-dashboard-product-img {
+                width: 50px;
+                height: 50px;
+            }
+        }
+    }
+
+    .bledstore-dashboard-btn {
+        margin: 30px 0px;
+
+        &:hover {
+            background-color: var(--bledstore-primary);
+            color: var(--bledstore-white);
+        }
+    }
+
+    .bledstore-dashboard-btn-back {
+        top: 25px;
+        position: relative;
+    }
+
+    .bledstore-dashboard-title {
+        text-align: center;
+    }
+
+    .bledstore-dashboard-table-item {
+        text-align: center;
+
+        .bledstore-dashboard-table-item-icon {
+            font-size: 20px;
+        }
+    }
+
+    .bledstore-auth-show-hide-content {
+
+        .bledstore-auth-show-hide-icon {
+            position: relative;
+            text-align: right;
+            top: -30px;
+            right: 15px;
+            cursor: pointer;
+            font-size: 20px;
+            float: right;
+        }
+    }
+
+    .bledstore-auth-btn-submit {
+        &:hover {
+            background-color: var(--bledstore-primary);
+            color: var(--bledstore-white);
+        }
+    }
+
+    .bledstore-dashboard-container {
+        justify-content: center;
+        margin: 0px 0px 25px 0px;
+
+        .bledstore-dashboard-items {
+            @include small() {
+                display: block;
+            }
+
+            display: flex;
+
+            .bledstore-dashboard-item {
+                @include small() {
+                    margin-right: 0px;
+                    width: auto;
+                }
+
+                display: flex;
+                align-items: center;
+                height: 100%;
+                padding-left: 20px;
+                margin-right: 20px;
+                border-radius: 4px;
+                margin-bottom: 20px;
+                border: 1px var(--bledstore-sliver) solid;
+                background-color: var(--bledstore-white);
+                box-shadow: var(--bledstore-box-shadow);
+                width: 300px;
+
+                .bledstore-dashboard-item-icon {
+                    font-size: 3.5rem;
+                    color: var(--bledstore-primary);
+                }
+
+                .bledstore-dashboard-item-content {
+                    margin: 20px;
+
+                    .bledstore-dashboard-item-content-title {
+                        margin: 0;
+                        text-align: center;
+                        color: var(--bledstore-warning);
+                        font-size: 2.5rem;
+                    }
+
+                    .bledstore-dashboard-item-content-subtitle {
+                        margin: 0;
+                        letter-spacing: 0.9px;
+                        line-height: 24px;
+                        color: var(--bledstore-primary);
+                        text-align: justify;
+                    }
+                }
+
+                &:hover {
+                    background-color: var(--bledstore-silver);
+
+                    .bledstore-dashboard-item-icon {
+                        color: var(--bledstore-warning);
+                    }
+                }
+            }
+        }
+    }
+}

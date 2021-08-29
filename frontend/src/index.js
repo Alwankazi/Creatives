@@ -1,20 +1,27 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import { Provider } from "react-redux";
-import store from "./store";
-import "./bootstrap.min.css";
-import "./index.css";
-import App from "./App";
-import reportWebVitals from "./reportWebVitals";
+import { BrowserRouter, Route } from "react-router-dom";
+import Routes from "./routes/Routes";
+import "./bledstore.scss";
+import "react-responsive-modal/styles.css";
+import BledStoreHeader from "./core/BledStoreHeader";
+import BledStoreFooter from "./core/BledStoreFooter";
+import store from "./redux/store";
+import BannerScreen from "./screens/store/utils/BannerScreen";
 
 ReactDOM.render(
-    <Provider store={store}>
-        <App />
-    </Provider>,
-    document.getElementById("root")
+  <Provider store={store}>
+    <React.StrictMode>
+      <BannerScreen />
+      <div className="grid-container">
+        <BrowserRouter>
+          <BledStoreHeader />
+          <Route component={Routes} />
+          <BledStoreFooter />
+        </BrowserRouter>
+      </div>
+    </React.StrictMode>
+  </Provider>,
+  document.getElementById("bledstore")
 );
-
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-reportWebVitals();
