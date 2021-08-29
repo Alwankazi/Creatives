@@ -1,31 +1,38 @@
 {
-  "name": "vello_food_api",
+  "name": "ecommercestore",
   "version": "1.0.0",
-  "description": "",
-  "main": "App.js",
+  "description": "MERN shopping cart app",
+  "main": "server.js",
+  "type": "module",
   "scripts": {
-    "start": "nodemon app.js"
+    "start": "node backend/server",
+    "server": "nodemon backend/server",
+    "client": "npm start --prefix frontend",
+    "dev": "concurrently \"npm run server\" \"npm run client\"",
+    "data:import": "node backend/seeder",
+    "data:destroy": "node backend/seeder -d"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/levikobi/EcommerceStore.git"
+  },
+  "author": "Kobi Levi",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/levikobi/EcommerceStore/issues"
+  },
+  "homepage": "https://github.com/levikobi/EcommerceStore#readme",
   "dependencies": {
-    "bcrypt": "^4.0.1",
-    "body-parser": "^1.19.0",
-    "busboy": "^0.3.1",
-    "cors": "^2.8.5",
+    "bcryptjs": "^2.4.3",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
-    "fs": "0.0.1-security",
+    "express-async-handler": "^1.1.4",
     "jsonwebtoken": "^8.5.1",
-    "mongodb": "^4.1.1",
-    "multer": "^1.4.2",
-    "mysql": "^2.18.1",
-    "os": "^0.1.1",
-    "path": "^0.12.7"
+    "mongoose": "^5.11.16",
+    "morgan": "^1.10.0"
   },
   "devDependencies": {
-    "node-dev": "^3.0.0",
-    "nodemon": "^2.0.4"
+    "concurrently": "^5.3.0",
+    "nodemon": "^2.0.7"
   }
 }
