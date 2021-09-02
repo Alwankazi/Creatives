@@ -8,11 +8,14 @@ import FormContainer from "../components/FormContainer";
 import { register } from "../actions/userActions";
 
 function RegisterScreen({ location, history }) {
+    const [isCustomiser, setIsCustomiser] = useState("");
     const [name, setName] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
     const [message, setMessage] = useState(null);
+
+    
 
     const dispatch = useDispatch();
 
@@ -22,17 +25,19 @@ function RegisterScreen({ location, history }) {
     const redirect = location.search ? location.search.split("=")[1] : "/";
 
     useEffect(() => {
+        
         if (userInfo) {
-            history.push(redirect);
+            console.log(userInfo)
+            history.push(redirect);  
         }
     }, [history, userInfo, redirect]);
-
+ 
     const submitHandler = (e) => {
         e.preventDefault();
         if (password !== confirmPassword) {
             setMessage("Passwords do not match");
         } else {
-            dispatch(register(name, email, password));
+            dispatch(register(name, email, password, isCustomiser));
         }
     };
 
@@ -43,6 +48,17 @@ function RegisterScreen({ location, history }) {
             {error && <Message variant="danger">{error}</Message>}
             {loading && <Loader />}
             <Form onSubmit={submitHandler}>
+                <Form.Group controlId="isCustomiser">
+                        {/* <Form.Label></Form.Label> */}
+                        <Form.Check
+                            type="checkbox"
+                            label="Are you looking to sell your customised products?"
+                            // placeholder="Enter name"
+                            checked={isCustomiser}
+                            onChange={(e) => setIsCustomiser(e.target.checked)}
+                            
+                        ></Form.Check>
+                    </Form.Group>
                 <Form.Group controlId="name">
                     <Form.Label>Name</Form.Label>
                     <Form.Control
@@ -87,7 +103,7 @@ function RegisterScreen({ location, history }) {
                     Register
                 </Button>
             </Form>
-
+            
             <Row className="py-3">
                 <Col>
                     Have an Account?{" "}

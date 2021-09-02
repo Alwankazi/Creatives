@@ -30,7 +30,7 @@ function ProductEditScreen({ match, history }) {
     useEffect(() => {
         if (successUpdate) {
             dispatch({ type: PRODUCT_UPDATE_RESET });
-            History.push("/admin/productlist");
+            history.push("/admin/productlist");
         } else if (!product.name || product._id !== productId) {
             dispatch(listProductDetails(productId));
         } else {

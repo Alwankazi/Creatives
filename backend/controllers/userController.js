@@ -14,6 +14,7 @@ const authUser = asyncHandler(async (req, res) => {
             _id: user._id,
             name: user.name,
             email: user.email,
+            isCustomiser: user.isCustomiser,
             isAdmin: user.isAdmin,
             token: generateToken(user._id),
         });
@@ -27,7 +28,7 @@ const authUser = asyncHandler(async (req, res) => {
 // @route   POST /api/users
 // @access  Public
 const registerUser = asyncHandler(async (req, res) => {
-    const { name, email, password } = req.body;
+    const { name, email, password, isCustomiser } = req.body;
     const userExists = await User.findOne({ email });
 
     if (userExists) {
@@ -35,13 +36,14 @@ const registerUser = asyncHandler(async (req, res) => {
         throw new Error("User already exists");
     }
 
-    const user = await User.create({ name, email, password });
-
+    const user = await User.create({ name, email, password, isCustomiser});
+    console.log(user.isCustomiser)
     if (user) {
         res.status(201).json({
             _id: user._id,
             name: user.name,
             email: user.email,
+            isCustomiser: user.isCustomiser,
             isAdmin: user.isAdmin,
             token: generateToken(user._id),
         });
@@ -62,6 +64,7 @@ const getUserProfile = asyncHandler(async (req, res) => {
             _id: user._id,
             name: user.name,
             email: user.email,
+            isCustomiser: user.isCustomiser,
             isAdmin: user.isAdmin,
         });
     } else {
@@ -88,6 +91,7 @@ const updateUserProfile = asyncHandler(async (req, res) => {
             _id: updatedUser._id,
             name: updatedUser.name,
             email: updatedUser.email,
+            isCustomiser: user.isCustomiser,
             isAdmin: updatedUser.isAdmin,
             token: generateToken(updatedUser._id),
         });
@@ -143,13 +147,16 @@ const updateUser = asyncHandler(async (req, res) => {
     if (user) {
         user.name = req.body.name || user.name;
         user.email = req.body.email || user.email;
+        user.isCustomiser = req.body.isCustomiser;
         user.isAdmin = req.body.isAdmin;
+
 
         const updatedUser = await user.save();
         res.json({
             _id: updatedUser._id,
             name: updatedUser.name,
             email: updatedUser.email,
+            isCustomiser: user.isCustomiser,
             isAdmin: updatedUser.isAdmin,
         });
     } else {

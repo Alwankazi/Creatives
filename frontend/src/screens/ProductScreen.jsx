@@ -74,7 +74,7 @@ function ProductScreen({ history, match }) {
                                         text={`${product.numReviews} reviews`}
                                     />
                                 </ListGroup.Item>
-                                <ListGroup.Item>Price: ${product.price}</ListGroup.Item>
+                                <ListGroup.Item>Price: AED{product.price}</ListGroup.Item>
                                 <ListGroup.Item>Description: {product.description}</ListGroup.Item>
                             </ListGroup>
                         </Col>

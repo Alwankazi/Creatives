@@ -66,7 +66,7 @@ export const logout = () => (dispatch) => {
     dispatch({ type: ORDER_LIST_MY_RESET });
 };
 
-export const register = (name, email, password) => async (dispatch) => {
+export const register = (name, email, password, isCustomiser) => async (dispatch) => {
     try {
         dispatch({
             type: USER_REGISTER_REQUEST,
@@ -78,8 +78,8 @@ export const register = (name, email, password) => async (dispatch) => {
             },
         };
 
-        const { data } = await axios.post("/api/users", { name, email, password }, config);
-
+        const { data } = await axios.post("/api/users", { name, email, password, isCustomiser}, config);
+        console.log(data)
         dispatch({
             type: USER_REGISTER_SUCCESS,
             payload: data,
