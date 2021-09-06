@@ -41,11 +41,12 @@ function UserListScreen({ history }) {
                 <Message variant="danger">{error}</Message>
             ) : (
                 <Table striped bordered hover responsive className="table-sm">
-                    <thead>
+                    <thead style={{ textAlign: "center" }}>
                         <tr>
                             <th>ID</th>
                             <th>NAME</th>
                             <th>EMAIL</th>
+                            <th>CUSTOMISER</th>
                             <th>ADMIN</th>
                             <th></th>
                         </tr>
@@ -55,12 +56,19 @@ function UserListScreen({ history }) {
                             <tr key={user._id}>
                                 <td>{user._id}</td>
                                 <td>{user.name}</td>
-                                <td>{user.email}</td>
+                                {/* <td>{user.email}</td> */}
                                 <td>
                                     <a href={`mailto:${user.email}`}></a>
                                     {user.email}
                                 </td>
-                                <td>
+                                <td style={{ textAlign: "center" }}>
+                                    {user.isCustomiser ? (
+                                        <i className="fas fa-check" style={{ color: "green" }}></i>
+                                    ) : (
+                                        <i className="fas fa-times" style={{ color: "red" }}></i>
+                                    )}
+                                </td>
+                                <td style={{ textAlign: "center" }}>
                                     {user.isAdmin ? (
                                         <i className="fas fa-check" style={{ color: "green" }}></i>
                                     ) : (

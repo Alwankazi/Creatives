@@ -49,14 +49,12 @@ function RegisterScreen({ location, history }) {
             {loading && <Loader />}
             <Form onSubmit={submitHandler}>
                 <Form.Group controlId="isCustomiser">
-                        {/* <Form.Label></Form.Label> */}
                         <Form.Check
                             type="checkbox"
                             label="Are you looking to sell your customised products?"
                             // placeholder="Enter name"
                             checked={isCustomiser}
-                            onChange={(e) => setIsCustomiser(e.target.checked)}
-                            
+                            onChange={(e) => setIsCustomiser(e.target.checked)}                          
                         ></Form.Check>
                     </Form.Group>
                 <Form.Group controlId="name">

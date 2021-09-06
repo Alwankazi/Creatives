@@ -140,3 +140,12 @@ export const getTopProducts = asyncHandler(async (req, res) => {
     const products = await Product.find({}).sort({ rating: -1 }).limit(3);
     res.json(products);
 });
+
+// @desc    Get users products
+// @route   POST /api/products/myproducts
+// @access  Public
+export const getCustomiserProductsList = asyncHandler(async (req, res) => {
+    console.log(req.user._id);
+    const products = await Product.find({ user: req.user._id});
+    res.json(products);
+});

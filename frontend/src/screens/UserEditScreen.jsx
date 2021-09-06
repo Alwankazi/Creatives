@@ -13,6 +13,7 @@ function UserEditScreen({ match, history }) {
 
     const [name, setName] = useState("");
     const [email, setEmail] = useState("");
+    const [isCustomiser, setIsCustomiser] = useState("");
     const [isAdmin, setIsAdmin] = useState(false);
 
     const dispatch = useDispatch();
@@ -32,13 +33,14 @@ function UserEditScreen({ match, history }) {
         } else {
             setName(user.name);
             setEmail(user.email);
+            setIsCustomiser(user.isCustomiser);
             setIsAdmin(user.isAdmin);
         }
     }, [dispatch, history, userId, user, successUpdate]);
 
     const submitHandler = (e) => {
         e.preventDefault();
-        dispatch(updateUser({ _id: userId, name, email, isAdmin }));
+        dispatch(updateUser({ _id: userId, name, email, isCustomiser, isAdmin }));
     };
 
     return (
@@ -75,7 +77,15 @@ function UserEditScreen({ match, history }) {
                                 onChange={(e) => setEmail(e.target.value)}
                             ></Form.Control>
                         </Form.Group>
-
+                        <Form.Group controlId="isCustomiser">
+                        <Form.Check
+                            type="checkbox"
+                            label="Are you looking to sell your customised products?"
+                            // placeholder="Enter name"
+                            checked={isCustomiser}
+                            onChange={(e) => setIsCustomiser(e.target.checked)}                          
+                        ></Form.Check>
+                        </Form.Group>
                         <Form.Group controlId="isadmin">
                             <Form.Check
                                 type="checkbox"

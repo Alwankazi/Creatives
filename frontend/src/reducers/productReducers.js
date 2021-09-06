@@ -23,6 +23,10 @@ import {
     PRODUCT_TOP_REQUEST,
     PRODUCT_TOP_SUCCESS,
     PRODUCT_TOP_FAILURE,
+    PRODUCT_LIST_MY_REQUEST,
+    PRODUCT_LIST_MY_SUCCESS,
+    PRODUCT_LIST_MY_FAILURE,
+    PRODUCT_LIST_MY_RESET,
 } from "../constants/productConstants";
 
 export const productListReducer = (state = { products: [] }, action) => {
@@ -84,7 +88,7 @@ export const productCreateReducer = (state = {}, action) => {
     }
 };
 
-export const productUpdateReducer = (state = { product: {} }, action) => {
+export const productUpdateReducer = (state = { product: [] }, action) => {
     switch (action.type) {
         case PRODUCT_UPDATE_REQUEST:
             return { loading: true };
@@ -93,7 +97,7 @@ export const productUpdateReducer = (state = { product: {} }, action) => {
         case PRODUCT_UPDATE_FAILURE:
             return { loading: false, error: action.payload };
         case PRODUCT_UPDATE_RESET:
-            return { product: {} };
+            return { product: [] };
         default:
             return state;
     }
@@ -122,6 +126,33 @@ export const productTopRatedReducer = (state = { products: [] }, action) => {
             return { loading: false, products: action.payload };
         case PRODUCT_TOP_FAILURE:
             return { loading: false, error: action.payload };
+        default:
+            return state;
+    }
+};
+
+export const productListReducerCustomisers = (state = { products: [] }, action) => {
+    switch (action.type) {
+        case PRODUCT_LIST_MY_REQUEST:
+            return {
+                loading: true,
+            };
+        case PRODUCT_LIST_MY_SUCCESS:
+            return {
+                loading: false,
+                products: action.payload,
+                pages: action.payload.pages,
+                page: action.payload.page,
+            };
+        case PRODUCT_LIST_MY_FAILURE:
+            return {
+                loading: false,
+                error: action.payload,
+            };
+        case PRODUCT_LIST_MY_RESET:
+            return {
+                products: [],
+            };
         default:
             return state;
     }

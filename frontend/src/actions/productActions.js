@@ -6,6 +6,10 @@ import {
     PRODUCT_DETAILS_REQUEST,
     PRODUCT_DETAILS_SUCCESS,
     PRODUCT_DETAILS_FAILURE,
+    PRODUCT_LIST_MY_REQUEST,
+    PRODUCT_LIST_MY_SUCCESS,
+    PRODUCT_LIST_MY_FAILURE,
+    PRODUCT_LIST_MY_RESET,
     PRODUCT_DELETE_REQUEST,
     PRODUCT_DELETE_SUCCESS,
     PRODUCT_DELETE_FAILURE,
@@ -22,6 +26,7 @@ import {
     PRODUCT_TOP_SUCCESS,
     PRODUCT_TOP_FAILURE,
 } from "../constants/productConstants";
+
 
 export const listProducts = (keyword = "", pageNumber = "") => async (dispatch) => {
     try {
@@ -219,3 +224,37 @@ export const listTopProducts = () => async (dispatch) => {
         });
     }
 };
+
+export const customisersProductList = () => async (dispatch, getState) => {
+    try {
+        dispatch({
+            type: PRODUCT_LIST_MY_REQUEST,
+        });
+     
+        const {
+            userLogin: { userInfo },
+        } = getState();
+
+        const config = {
+            headers: {
+                Authorization: `Bearer ${userInfo.token}`,
+            },
+        };
+
+        const { data } = await axios.get(`/api/products/myproducts`, config);
+        console.log(data)
+        dispatch({
+            type: PRODUCT_LIST_MY_SUCCESS,
+            payload: data,
+        });
+    } catch (error) {
+        dispatch({
+            type: PRODUCT_LIST_MY_FAILURE,
+            payload:
+                error.response && error.response.data.message
+                    ? error.response.data.message
+                    : error.message,
+        });
+    }
+};
+

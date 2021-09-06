@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import Message from "../components/Message";
 import Loader from "../components/Loader";
 import Paginate from "../components/Paginate";
-import { listProducts, deleteProduct, createProduct } from "../actions/productActions";
+import { customisersProductList,listProducts, deleteProduct, createProduct } from "../actions/productActions";
 import { PRODUCT_CREATE_RESET } from "../constants/productConstants";
 
 function ProductListScreen({ history, match }) {
@@ -13,8 +13,8 @@ function ProductListScreen({ history, match }) {
 
     const dispatch = useDispatch();
 
-    const productList = useSelector((state) => state.productList);
-    const { loading, error, products, page, pages } = productList;
+    const productListCustomisers = useSelector((state) => state.productListCustomisers);
+    const { loading, error, products, page, pages } = productListCustomisers ;
 
     const productDelete = useSelector((state) => state.productDelete);
     const { loading: loadingDelete, error: errorDelete, success: successDelete } = productDelete;
@@ -32,15 +32,22 @@ function ProductListScreen({ history, match }) {
 
     useEffect(() => {
         dispatch({ type: PRODUCT_CREATE_RESET });
-        if (!userInfo.isAdmin) {
+        if (userInfo) {
+            // console.log(customisersProductList())
+            dispatch(customisersProductList());
+        } else {
             history.push("/login");
         }
+        // if (!userInfo.isAdmin) {
+        //     history.push("/login");
+        // }
 
         if (successCreate) {
             history.push(`/admin/product/${createdProduct._id}/edit`);
-        } else {
-            dispatch(listProducts("", pageNumber));
         }
+        // } else {
+        //     dispatch(listProducts("", pageNumber));
+        // }
     }, [dispatch, history, userInfo, successDelete, successCreate, createdProduct, pageNumber]);
 
     const deleteHandler = (id) => {
